@@ -60,6 +60,10 @@ Genderstatistic = {'m': 0,
 verified = {True: 0,
             False: 0
             }
+w = []
+x = []
+y = []
+z = []
 resfile = codecs.open('scratch_data.txt', 'w', 'utf-8')
 resfile.write('Followings Info of UserID=%s\nFollowing Count: %s\nPage Count: %s\n\n' % (userid, fllwingcnt, pagecnt))
 print('writing...')
@@ -68,6 +72,10 @@ for eachuser in allusers:
     print(userinfo)
     Genderstatistic[userinfo['gender']] += 1
     verified[userinfo['verified']] += 1
+    w.append(int(userinfo['follow_count']))
+    x.append(int(userinfo['statuses_count']))
+    y.append(int(userinfo['followers_count']))
+    z.append(userinfo['verified'])
     resfile.write('Screen Name: %s\nGender: %s  Posts: %d  Followings: %d  Followers: %d\n'
                   % (userinfo['screen_name'], userinfo['gender'], userinfo['statuses_count'],
                      userinfo['follow_count'], userinfo['followers_count']))
@@ -79,25 +87,44 @@ resfile.close()
 
 print(Genderstatistic)
 
-# pie figure of Statistic
+# gender pie figure
 plt.rcParams['figure.figsize'] = (16, 9)
-piefig1 = plt.subplot(1, 2, 1)
+piefig1 = plt.subplot(2, 2, 1)
 mfper = [Genderstatistic['m'] * 100 / fllwingcnt, Genderstatistic['f'] * 100 / fllwingcnt]
 piecolor = ['lightblue', 'pink']
 patches, l_text, p_text = piefig1.pie(mfper, labels=Genderstatistic.keys(), colors=piecolor, explode=(0.06, 0),
-                                     labeldistance=1.1, autopct='%3.2f%%', shadow=False, startangle=90, pctdistance=0.6)
+                                      labeldistance=1.1, autopct='%3.2f%%', shadow=False, startangle=90,
+                                      pctdistance=0.6)
 piefig1.axis('equal')
 piefig1.legend()
-piefig1.set_title('GenderStatistic of UserID=%s\'s Followings\n%d in Total' % (userid, fllwingcnt))
+piefig1.set_title('GenderStatistic of UserID=%s\'s Followings\n\n%d in Total' % (userid, fllwingcnt))
 
-piefig2 = plt.subplot(1, 2, 2)
+# verification pie figure
+piefig2 = plt.subplot(2, 2, 2)
 vper = [verified[True] * 100 / fllwingcnt, verified[False] * 100 / fllwingcnt]
 piecolor = ['orange', 'cyan']
-patches, l_text, p_text = piefig2.pie(vper, labels=['verified','not verified'], colors=piecolor, explode=(0.06, 0),
-                                     labeldistance=1.1, autopct='%3.2f%%', shadow=False, startangle=90, pctdistance=0.6)
+patches, l_text, p_text = piefig2.pie(vper, labels=['verified', 'not verified'], colors=piecolor, explode=(0.06, 0),
+                                      labeldistance=1.1, autopct='%3.2f%%', shadow=False, startangle=90,
+                                      pctdistance=0.6)
 piefig2.axis('equal')
 piefig2.legend()
-piefig2.set_title('V or NOT Statistic of UserID=%s\'s Followings\n%d in Total' % (userid, fllwingcnt))
+piefig2.set_title('V or NOT Statistic of UserID=%s\'s Followings\n\n%d in Total' % (userid, fllwingcnt))
+
+# follower_cnt ~ post_cnt Curve
+fig3 = plt.subplot(2, 2, 3)
+for i in range(0, len(x)):
+    fig3.plot(x[i], y[i], '+', color='orange' if z[i] else 'cyan')
+fig3.set_xlabel('post count')
+fig3.set_ylabel('follower count')
+fig3.set_title('follower_cnt ~ post_cnt Curve')
+
+# follower ~ follow Curve
+fig4 = plt.subplot(2, 2, 4)
+for i in range(0, len(y)):
+    fig4.plot(w[i], y[i], '+', color='orange' if z[i] else 'cyan')
+fig4.set_xlabel('follow count')
+fig4.set_ylabel('follower count')
+fig4.set_title('follower ~ follow Curve')
 
 plt.savefig('statistic.png', dpi=300)
 plt.show()
