@@ -2,6 +2,8 @@
 
 Scratch the statistics of User's Followings, currently including the gender and verification.
 
+More can be done in the same way.
+
 * User_ID is required
 * Cookies is optional but suggested
 * TIPS:
