@@ -1,4 +1,6 @@
-## Get Weibo data using requests (python3)##
+## Get Weibo data using requests (python3)
+
+Scratch the INFO of User's Followings
 
 * User_ID is required
 * Cookies is optional but suggested
